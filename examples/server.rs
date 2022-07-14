@@ -69,7 +69,7 @@ fn main() {
                 if logon.username == b"some_user" && logon.password == b"some_password" {
                     let mut response_logon = Logon::new();
                     response_logon.encrypt_method = logon.encrypt_method.clone();
-                    response_logon.heart_bt_int = logon.heart_bt_int.clone();
+                    response_logon.heart_bt_int = logon.heart_bt_int;
                     response_logon.default_appl_ver_id = logon.default_appl_ver_id;
                     server.approve_new_connection(connection_id, Box::new(response_logon), None);
 

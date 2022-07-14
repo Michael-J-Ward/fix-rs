@@ -38,10 +38,10 @@ use fix_rs::message_version::MessageVersion;
 const SOCKET_BASE_PORT: usize = 7000;
 static SOCKET_PORT: AtomicUsize = AtomicUsize::new(SOCKET_BASE_PORT);
 
-pub const CLIENT_TARGET_COMP_ID: &'static [u8] = b"TX"; //Test Exchange
-pub const CLIENT_SENDER_COMP_ID: &'static [u8] = b"TEST";
-pub const SERVER_TARGET_COMP_ID: &'static [u8] = CLIENT_SENDER_COMP_ID;
-pub const SERVER_SENDER_COMP_ID: &'static [u8] = CLIENT_TARGET_COMP_ID;
+pub const CLIENT_TARGET_COMP_ID: &[u8] = b"TX"; //Test Exchange
+pub const CLIENT_SENDER_COMP_ID: &[u8] = b"TEST";
+pub const SERVER_TARGET_COMP_ID: &[u8] = CLIENT_SENDER_COMP_ID;
+pub const SERVER_SENDER_COMP_ID: &[u8] = CLIENT_TARGET_COMP_ID;
 
 const MAX_MESSAGE_SIZE: u64 = 4096;
 
@@ -266,11 +266,11 @@ impl TestStream {
         parser.set_default_message_version(message_version);
 
         TestStream {
-            fix_version: fix_version,
-            message_version: message_version,
-            stream: stream,
-            poll: poll,
-            parser: parser,
+            fix_version,
+            message_version,
+            stream,
+            poll,
+            parser,
         }
     }
 
