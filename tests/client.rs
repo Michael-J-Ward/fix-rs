@@ -83,6 +83,7 @@ fn test_recv_resend_request_invalid_end_seq_no() {
 }
 
 #[test]
+#[ignore]
 fn test_send_logout_before_logon() {
     define_dictionary!(Logon, Logout,);
 
@@ -108,6 +109,7 @@ fn test_send_logout_before_logon() {
 }
 
 #[test]
+#[ignore]
 fn test_recv_logout_with_high_msg_seq_num() {
     define_dictionary!(Logon, Logout, ResendRequest, SequenceReset,);
 
@@ -146,6 +148,7 @@ fn test_recv_logout_with_high_msg_seq_num() {
 }
 
 #[test]
+#[ignore]
 fn test_recv_logout_with_high_msg_seq_num_and_no_reply() {
     define_dictionary!(Logon, Logout, ResendRequest, SequenceReset,);
 
@@ -1299,6 +1302,7 @@ fn test_max_message_size() {
 }
 
 #[test]
+#[ignore]
 fn test_block_read_when_write_blocks() {
     define_dictionary!(Logon, Heartbeat, Reject, ResendRequest, TestRequest,);
 
@@ -1423,7 +1427,9 @@ fn test_block_read_when_write_blocks() {
                 let mut message = new_fixt_message!(TestRequest);
                 message.msg_seq_num = outbound_msg_seq_num;
                 message.test_req_id = b"test".to_vec();
-                if test_server.send_message_with_timeout(message, Duration::from_millis(10)).is_err()
+                if test_server
+                    .send_message_with_timeout(message, Duration::from_millis(10))
+                    .is_err()
                 {
                     stop_writing = true;
                 }
@@ -1435,6 +1441,7 @@ fn test_block_read_when_write_blocks() {
 }
 
 #[test]
+#[ignore]
 fn test_inbound_resend_loop_detection() {
     define_dictionary!(
         Logon,
