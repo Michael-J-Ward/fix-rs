@@ -1312,7 +1312,7 @@ fn test_block_read_when_write_blocks() {
         //Run a background thread to drain client events until they stop. The stopping indicates the
         //client has stopped accepting new messages.
         let client = Arc::new(Mutex::new(client)); //Keep client around even after thread ends.
-        let client_clone = client.clone(); //Clone to be passed to thread.
+        let client_clone = client; //Clone to be passed to thread.
         let thread_running = Arc::new(AtomicBool::new(true));
         let thread_running_clone = thread_running.clone();
         let thread_handle = thread::spawn(move || {
@@ -1423,8 +1423,7 @@ fn test_block_read_when_write_blocks() {
                 let mut message = new_fixt_message!(TestRequest);
                 message.msg_seq_num = outbound_msg_seq_num;
                 message.test_req_id = b"test".to_vec();
-                if let Err(_) =
-                    test_server.send_message_with_timeout(message, Duration::from_millis(10))
+                if test_server.send_message_with_timeout(message, Duration::from_millis(10)).is_err()
                 {
                     stop_writing = true;
                 }

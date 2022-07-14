@@ -182,8 +182,17 @@ fn field_type(ty: &str) -> String {
         "SEQNUM" => "SEQ_NUM",
 
         // FIXME: these are hacks
-        "PRICE" | "PRICEOFFSET" | "BOOLEAN" | "PERCENTAGE" | "NUMINGROUP" | "AMT" | "QTY"
-        | "FLOAT" | "INT" | "MULTIPLEVALUESTRING" | "EXCHANGE" => "STRING",
+        "PRICE"
+        | "PRICEOFFSET"
+        | "BOOLEAN"
+        | "PERCENTAGE"
+        | "NUMINGROUP"
+        | "AMT"
+        | "QTY"
+        | "FLOAT"
+        | "INT"
+        | "MULTIPLEVALUESTRING"
+        | "EXCHANGE" => "STRING",
 
         other => other,
     };
