@@ -317,7 +317,7 @@ impl Engine {
         //Tell thread to setup this connection by connecting a socket and logging on.
         self.tx
             .send(InternalEngineToThreadEvent::NewConnection(
-                token.clone(),
+                token,
                 fix_version,
                 default_message_version,
                 sender_comp_id.to_vec(),
