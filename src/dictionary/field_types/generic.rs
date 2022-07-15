@@ -606,7 +606,7 @@ impl FieldType for DayOfMonthFieldType {
 
     fn set_value(field: &mut Self::Type, bytes: &[u8]) -> Result<(), SetValueError> {
         let new_value = slice_to_int::<u8>(bytes)?;
-        if new_value < 1 || new_value > 31 {
+        if !(1..=31).contains(&new_value) {
             return Err(SetValueError::OutOfRange);
         }
 
@@ -786,7 +786,7 @@ impl MonthYear {
         } else {
             return None;
         };
-        if year < 0 || year > 9999 {
+        if !(0..=9999).contains(&year) {
             return None;
         }
 
@@ -795,7 +795,7 @@ impl MonthYear {
         } else {
             return None;
         };
-        if month < 1 || month > 12 {
+        if !(1..=12).contains(&month) {
             return None;
         }
 
@@ -804,12 +804,12 @@ impl MonthYear {
         let remainder = if bytes.len() > 6 {
             Some(if bytes[6] == b'w' {
                 MonthYearRemainder::Week(match u8::from_str(&value_string[7..]) {
-                    Ok(week) if week >= 1 && week <= 5 => week,
+                    Ok(week) if (1..=5).contains(&week) => week,
                     _ => return None,
                 })
             } else {
                 MonthYearRemainder::Day(match u8::from_str(&value_string[6..7]) {
-                    Ok(day) if day >= 1 && day <= 31 => day,
+                    Ok(day) if (1..=31).contains(&day) => day,
                     _ => return None,
                 })
             })
