@@ -11,6 +11,7 @@
 
 use std::io::{Read, Result, Write};
 
+#[derive(Default)]
 pub struct ByteBuffer {
     #[doc(hidden)]
     pub bytes: Vec<u8>,
@@ -22,11 +23,7 @@ pub struct ByteBuffer {
 
 impl ByteBuffer {
     pub fn new() -> ByteBuffer {
-        ByteBuffer {
-            bytes: Vec::new(),
-            valid_bytes_begin: 0,
-            valid_bytes_end: 0,
-        }
+        Default::default()
     }
 
     pub fn with_capacity(capacity: usize) -> ByteBuffer {
