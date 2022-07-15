@@ -606,7 +606,7 @@ impl FieldType for DayOfMonthFieldType {
 
     fn set_value(field: &mut Self::Type, bytes: &[u8]) -> Result<(), SetValueError> {
         let new_value = slice_to_int::<u8>(bytes)?;
-        if new_value < 1 || new_value > 31 {
+        if !(1..=31).contains(&new_value) {
             return Err(SetValueError::OutOfRange);
         }
 
@@ -726,7 +726,7 @@ impl FieldType for LocalMktDateFieldType {
         _message_version: MessageVersion,
         buf: &mut Vec<u8>,
     ) -> usize {
-        assert!(!Self::is_empty(&field)); //Was required field not set?
+        assert!(!Self::is_empty(field)); //Was required field not set?
 
         let value_string = field.format("%Y%m%d").to_string();
         buf.write(value_string.as_bytes()).unwrap()
@@ -786,7 +786,7 @@ impl MonthYear {
         } else {
             return None;
         };
-        if year < 0 || year > 9999 {
+        if !(0..=9999).contains(&year) {
             return None;
         }
 
@@ -795,7 +795,7 @@ impl MonthYear {
         } else {
             return None;
         };
-        if month < 1 || month > 12 {
+        if !(1..=12).contains(&month) {
             return None;
         }
 
@@ -804,12 +804,12 @@ impl MonthYear {
         let remainder = if bytes.len() > 6 {
             Some(if bytes[6] == b'w' {
                 MonthYearRemainder::Week(match u8::from_str(&value_string[7..]) {
-                    Ok(week) if week >= 1 && week <= 5 => week,
+                    Ok(week) if (1..=5).contains(&week) => week,
                     _ => return None,
                 })
             } else {
                 MonthYearRemainder::Day(match u8::from_str(&value_string[6..7]) {
-                    Ok(day) if day >= 1 && day <= 31 => day,
+                    Ok(day) if (1..=31).contains(&day) => day,
                     _ => return None,
                 })
             })
@@ -818,9 +818,9 @@ impl MonthYear {
         };
 
         Some(MonthYear {
-            year: year,
-            month: month,
-            remainder: remainder,
+            year,
+            month,
+            remainder,
         })
     }
 
@@ -875,14 +875,14 @@ impl FieldType for MonthYearFieldType {
     fn set_value(field: &mut Self::Type, bytes: &[u8]) -> Result<(), SetValueError> {
         if let Some(value) = Self::Type::new(bytes) {
             *field = value;
-            return Ok(());
+            Ok(())
+        } else {
+            Err(SetValueError::WrongFormat)
         }
-
-        Err(SetValueError::WrongFormat)
     }
 
     fn is_empty(field: &Self::Type) -> bool {
-        return field.year < 0;
+        field.year < 0
     }
 
     fn len(_field: &Self::Type) -> usize {
@@ -1223,7 +1223,7 @@ impl FieldType for UtcTimestampFieldType {
         _message_version: MessageVersion,
         buf: &mut Vec<u8>,
     ) -> usize {
-        assert!(!Self::is_empty(&field)); //Was required field not set?
+        assert!(!Self::is_empty(field)); //Was required field not set?
 
         buf.reserve(21);
         let naive_utc = field.naive_utc();

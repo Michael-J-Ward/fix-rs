@@ -290,7 +290,7 @@ macro_rules! define_enum_field_type_with_reserved {
             type Type = $( $field_type_type )*;
 
             #[allow(unreachable_code)]
-            #[allow(needless_return)]
+            #[allow(clippy::needless_return)]
             fn default_value() -> Self::Type {
                 define_enum_field_type_impl!( DEFAULT_VALUE_FUNC $( $field_type_type )* { $( $base_type_field, )* } );
             }
@@ -330,7 +330,7 @@ macro_rules! define_enum_field_type_with_reserved {
             type Type = $base_type;
 
             #[allow(unreachable_code)]
-            #[allow(needless_return)]
+            #[allow(clippy::needless_return)]
             fn default_value() -> Self::Type {
                 define_enum_field_type_impl!( DEFAULT_VALUE_FUNC $base_type { $( $base_type_field, )* } );
             }
@@ -366,7 +366,7 @@ macro_rules! define_enum_field_type_with_reserved {
             type Type = Option<$base_type>;
 
             #[allow(unreachable_code)]
-            #[allow(needless_return)]
+            #[allow(clippy::needless_return)]
             fn default_value() -> Self::Type {
                 define_enum_field_type_impl!( DEFAULT_VALUE_FUNC Self::Type { $( $base_type_field, )* } );
             }

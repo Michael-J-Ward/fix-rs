@@ -1,3 +1,6 @@
+// TODO: Many fields are never read... need to figure out what's necessary and what's not
+#![allow(dead_code)]
+
 use std::fmt;
 use std::fs::File;
 use std::io::{self, Read, Write};
@@ -182,8 +185,17 @@ fn field_type(ty: &str) -> String {
         "SEQNUM" => "SEQ_NUM",
 
         // FIXME: these are hacks
-        "PRICE" | "PRICEOFFSET" | "BOOLEAN" | "PERCENTAGE" | "NUMINGROUP" | "AMT" | "QTY"
-        | "FLOAT" | "INT" | "MULTIPLEVALUESTRING" | "EXCHANGE" => "STRING",
+        "PRICE"
+        | "PRICEOFFSET"
+        | "BOOLEAN"
+        | "PERCENTAGE"
+        | "NUMINGROUP"
+        | "AMT"
+        | "QTY"
+        | "FLOAT"
+        | "INT"
+        | "MULTIPLEVALUESTRING"
+        | "EXCHANGE" => "STRING",
 
         other => other,
     };
@@ -202,7 +214,7 @@ pub fn generate_dictionary<P: AsRef<Path>>(src: P, dest: P) -> Result<(), Genera
 
     let schema: FixXmlSchema = from_str(&file_contents)?;
 
-    f.write(
+    f.write_all(
         r#"use fix_rs::field::Field;
 use fix_rs::field_tag::{self, FieldTag};
 use fix_rs::field_type::FieldType;
@@ -267,7 +279,14 @@ use fix_rs::{define_fields, define_fixt_message, define_dictionary};"#
                         field.name
                     )?;
                 }
-                _ => {} // FIXME: Groups and Components
+                FixItemSchema::Component(_) => {
+                    // FIXME: Components
+                    todo!("implement components")
+                }
+                FixItemSchema::Group(_) => {
+                    // FIXME: Groups
+                    todo!("implement groups")
+                }
             }
         }
 

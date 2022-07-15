@@ -37,12 +37,12 @@ use crate::rule::Rule;
 //TODO: Support configuration settings for things like MAX_VALUE_LENGTH, MAX_BODY_LENGTH,
 //      MAX_TAG_LENGTH, the size of a "Length" and other types.
 
-const BEGINSTR_TAG_BYTES: &'static [u8] = b"8";
+const BEGINSTR_TAG_BYTES: &[u8] = b"8";
 const BEGINSTR_TAG: FieldTag = FieldTag(8);
-const BODYLENGTH_TAG_BYTES: &'static [u8] = b"9";
+const BODYLENGTH_TAG_BYTES: &[u8] = b"9";
 const BODYLENGTH_TAG: FieldTag = FieldTag(9);
 const MSGTYPE_TAG: FieldTag = FieldTag(35);
-const CHECKSUM_TAG_BYTES: &'static [u8] = b"10";
+const CHECKSUM_TAG_BYTES: &[u8] = b"10";
 const CHECKSUM_TAG: FieldTag = FieldTag(10);
 
 pub enum ParseError {
@@ -318,11 +318,11 @@ impl Parser {
         }
 
         Parser {
-            message_dictionary: message_dictionary,
-            max_message_length: max_message_length,
+            message_dictionary,
+            max_message_length,
             default_message_version: DefaultApplVerIDFieldType::default_value(),
             default_message_type_version: HashMap::new(),
-            value_to_length_tags: value_to_length_tags,
+            value_to_length_tags,
             found_message: FoundMessage::NotFound,
             current_tag: FieldTag::empty(),
             current_bytes: Vec::with_capacity(64),
@@ -690,7 +690,7 @@ impl Parser {
                             .push(Box::new(TagRuleMode::RepeatingGroups(Box::new(
                                 ParseRepeatingGroupState {
                                     number_of_tag: self.current_tag,
-                                    group_count: group_count,
+                                    group_count,
                                     first_tag: repeating_group_builder
                                         .first_field(self.message_version),
                                     groups: Vec::new(),
@@ -701,7 +701,7 @@ impl Parser {
                             .push(Box::new(TagRuleMode::RepeatingGroupStart(first_field)));
                     }
                     Ok(_) => {} //group_count == 0. Just ignore.
-                    Err(_) => return Err(ParseError::WrongFormatTag(self.current_tag.clone())),
+                    Err(_) => return Err(ParseError::WrongFormatTag(self.current_tag)),
                 }
                 skip_set_value = true;
             }
@@ -776,15 +776,13 @@ impl Parser {
             match *tag_rule_mode {
                 TagRuleMode::LengthThenValue(ref value_tag, byte_count) => {
                     if self.current_tag != *value_tag {
-                        return Err(ParseError::MissingFollowingLengthTag(
-                            self.previous_tag.clone(),
-                        ));
+                        return Err(ParseError::MissingFollowingLengthTag(self.previous_tag));
                     }
 
                     //Fast track to read in the specified number of bytes.
                     self.fast_track_bytes_remaining = byte_count;
                     *index += 1;
-                    self.fast_track_read_bytes(index, &message_bytes)?;
+                    self.fast_track_read_bytes(index, message_bytes)?;
                     *index -= 1;
                 }
                 TagRuleMode::RepeatingGroupStart(first_repeating_group_tag) => {
@@ -807,9 +805,7 @@ impl Parser {
             self.value_to_length_tags.get(&self.current_tag)
         {
             if *required_preceding_tag != self.previous_tag {
-                return Err(ParseError::MissingPrecedingLengthTag(
-                    self.current_tag.clone(),
-                ));
+                return Err(ParseError::MissingPrecedingLengthTag(self.current_tag));
             }
         }
 
@@ -905,7 +901,7 @@ impl Parser {
             self.target_comp_id = self.current_bytes.clone();
         } else if self.current_bytes.is_empty() {
             //Tag was provided without a value.
-            return Err(ParseError::NoValueAfterTag(self.current_tag.clone()));
+            return Err(ParseError::NoValueAfterTag(self.current_tag));
         } else {
             //FIXT.1.1 requires that if the ApplVerID tag is specified, it must be the sixth field.
             let mut skip_set_value = false;
@@ -917,7 +913,7 @@ impl Parser {
                         self.message_version = appl_ver_id;
                         skip_set_value = true;
                     } else {
-                        return Err(ParseError::OutOfRangeTag(self.current_tag.clone()));
+                        return Err(ParseError::OutOfRangeTag(self.current_tag));
                     }
                 }
                 //Fall back to the message specific default (if specified) or the session default
@@ -993,8 +989,8 @@ impl Parser {
                                 prgs.group_builder.required_fields(self.message_version);
                             prgs.groups.push(ParseGroupState {
                                 message: group,
-                                remaining_fields: remaining_fields,
-                                remaining_required_fields: remaining_required_fields,
+                                remaining_fields,
+                                remaining_required_fields,
                             });
 
                             //Make sure we haven't exceeded the number of repeating
@@ -1037,7 +1033,7 @@ impl Parser {
                                 .fields(self.message_version)
                                 .contains_key(&self.current_tag)
                             {
-                                return Err(ParseError::DuplicateTag(self.current_tag.clone()));
+                                return Err(ParseError::DuplicateTag(self.current_tag));
                             } else if prgs.groups.len() < prgs.group_count {
                                 return Err(ParseError::NonRepeatingGroupTagInRepeatingGroup(
                                     self.current_tag,
@@ -1099,12 +1095,12 @@ impl Parser {
                                 return Err(ParseError::ApplVerIDNotSixthTag);
                             }
 
-                            return Err(ParseError::DuplicateTag(self.current_tag.clone()));
+                            return Err(ParseError::DuplicateTag(self.current_tag));
                         } else {
-                            return Err(ParseError::UnexpectedTag(self.current_tag.clone()));
+                            return Err(ParseError::UnexpectedTag(self.current_tag));
                         }
                     } else {
-                        return Err(ParseError::UnknownTag(self.current_tag.clone()));
+                        return Err(ParseError::UnknownTag(self.current_tag));
                     }
                 }
             }
@@ -1225,7 +1221,7 @@ impl Parser {
         self.scan_for_message(index, message_bytes);
 
         //Resume loading any bytes using the fast track if we ran out in the last call.
-        self.fast_track_read_bytes(index, &message_bytes)?;
+        self.fast_track_read_bytes(index, message_bytes)?;
 
         //Parse each byte in the message one by one.
         while *index < message_bytes.len() {

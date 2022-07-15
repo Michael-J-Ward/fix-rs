@@ -12,7 +12,6 @@
 extern crate chrono;
 #[macro_use]
 extern crate fix_rs;
-#[macro_use]
 extern crate fix_rs_macros;
 
 use chrono::offset::Utc;
@@ -178,7 +177,7 @@ fn parse_message_with_ver<
             .unwrap()
             .clone();
         if casted_message != new_casted_message {
-            println!("");
+            println!();
             println!("{}", casted_message.debug(fix_version, message_version));
             println!("{}", new_casted_message.debug(fix_version, message_version));
         }
@@ -1043,7 +1042,7 @@ fn stream_test() {
 
     let two_messages = b"8=FIX.4.2\x019=65\x0135=L\x0149=SERVER\x0156=CLIENT\x0134=177\x0152=20090107-18:15:16\x0198=0\x01108=30\x0110=073\x018=FIX.4.2\x019=65\x0135=L\x0149=SERVER\x0156=CLIENT\x0134=177\x0152=20090107-18:15:16\x0198=0\x01108=30\x0110=073\x01";
     let mut parser = Parser::new(build_dictionary(), MAX_MESSAGE_SIZE);
-    let (bytes_read, result) = parser.parse(&two_messages.to_vec());
+    let (bytes_read, result) = parser.parse(two_messages.as_ref());
     assert!(result.is_ok());
     assert_eq!(bytes_read, two_messages.len());
     assert_eq!(parser.messages.len(), 2);
@@ -1068,7 +1067,7 @@ fn stream_test() {
 
     let garbage_before_message = b"garbage\x01before=message8=FIX.4.2\x019=65\x0135=L\x0149=SERVER\x0156=CLIENT\x0134=177\x0152=20090107-18:15:16\x0198=0\x01108=30\x0110=073\x01";
     let mut parser = Parser::new(build_dictionary(), MAX_MESSAGE_SIZE);
-    let (bytes_read, result) = parser.parse(&garbage_before_message.to_vec());
+    let (bytes_read, result) = parser.parse(garbage_before_message.as_ref());
     assert_eq!(bytes_read, garbage_before_message.len());
     assert!(result.is_ok());
     let casted_message = parser
@@ -1096,7 +1095,7 @@ fn stream_test() {
 
     let garbage_between_messages = b"8=FIX.4.2\x019=65\x0135=L\x0149=SERVER\x0156=CLIENT\x0134=177\x0152=20090107-18:15:16\x0198=0\x01108=30\x0110=073\x01garbage=before\x01m8ssage8=FIX.4.2\x019=65\x0135=L\x0149=SERVER\x0156=CLIENT\x0134=177\x0152=20090107-18:15:16\x0198=0\x01108=30\x0110=073\x01";
     let mut parser = Parser::new(build_dictionary(), MAX_MESSAGE_SIZE);
-    let (bytes_read, result) = parser.parse(&garbage_between_messages.to_vec());
+    let (bytes_read, result) = parser.parse(garbage_between_messages.as_ref());
     assert!(result.is_ok());
     assert_eq!(bytes_read, garbage_between_messages.len());
     assert_eq!(parser.messages.len(), 2);
@@ -1121,7 +1120,7 @@ fn stream_test() {
 
     let invalid_message_before_valid_message = b"8=FIX.4.2\x0110=0\x018=FIX.4.2\x019=65\x0135=L\x0149=SERVER\x0156=CLIENT\x0134=177\x0152=20090107-18:15:16\x0198=0\x01108=30\x0110=073\x01";
     let mut parser = Parser::new(build_dictionary(), MAX_MESSAGE_SIZE);
-    let (bytes_read_failure, result) = parser.parse(&invalid_message_before_valid_message.to_vec());
+    let (bytes_read_failure, result) = parser.parse(invalid_message_before_valid_message.as_ref());
     assert!(result.is_err());
     match result.err().unwrap() {
         fix_rs::fix::ParseError::ChecksumNotLastTag => {}

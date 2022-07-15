@@ -317,7 +317,7 @@ impl Engine {
         //Tell thread to setup this connection by connecting a socket and logging on.
         self.tx
             .send(InternalEngineToThreadEvent::NewConnection(
-                token.clone(),
+                token,
                 fix_version,
                 default_message_version,
                 sender_comp_id.to_vec(),
@@ -348,7 +348,7 @@ impl Engine {
 
         self.tx
             .send(InternalEngineToThreadEvent::NewListener(
-                token.clone(),
+                token,
                 sender_comp_id.to_vec(),
                 listener,
             ))
@@ -468,7 +468,7 @@ impl Engine {
                 }
                 _ => {}
             }
-        };
+        }
 
         if let Ok(event) = self.rx.try_recv() {
             update_engine(self, &event);

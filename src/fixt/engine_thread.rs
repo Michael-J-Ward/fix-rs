@@ -107,103 +107,62 @@ enum ConnectionStatus {
 
 impl ConnectionStatus {
     fn is_sending_logon(&self) -> bool {
-        if let ConnectionStatus::SendingLogon = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::SendingLogon)
     }
 
     fn is_receiving_logon(&self) -> bool {
-        if let ConnectionStatus::ReceivingLogon(_, _) = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::ReceivingLogon(_, _))
     }
 
     fn is_approving_logon(&self) -> bool {
-        if let ConnectionStatus::ApprovingLogon = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::ApprovingLogon)
     }
 
     fn is_established(&self) -> bool {
-        if let ConnectionStatus::Established = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::Established)
     }
 
     fn is_logging_out(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(_) = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::LoggingOut(_))
     }
 
     fn is_logging_out_with_error(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::Error(_) = *logging_out_type {
-                true
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::Error(_))
+        )
     }
 
     fn is_logging_out_with_resending_request_initiated_by_local(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::ResendRequesting(ref logging_out_initiator) = *logging_out_type {
-                if let LoggingOutInitiator::Local = *logging_out_initiator {
-                    return true;
-                }
-            }
-        }
-
-        false
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::ResendRequesting(
+                LoggingOutInitiator::Local
+            ))
+        )
     }
 
     fn is_logging_out_with_resending_request_initiated_by_remote(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::ResendRequesting(ref logging_out_initiator) = *logging_out_type {
-                if let LoggingOutInitiator::Remote = *logging_out_initiator {
-                    return true;
-                }
-            }
-        }
-
-        false
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::ResendRequesting(
+                LoggingOutInitiator::Remote
+            ))
+        )
     }
 
     fn is_logging_out_with_responding(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::Responding = *logging_out_type {
-                true
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::Responding)
+        )
     }
 
     fn is_logging_out_with_responded(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::Responded = *logging_out_type {
-                true
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::Responded)
+        )
     }
 }
 
@@ -231,7 +190,7 @@ impl OutboundMessage {
         OutboundMessage {
             message: Box::new(message),
             message_version: None,
-            auto_msg_seq_num: auto_msg_seq_num,
+            auto_msg_seq_num,
         }
     }
 
@@ -245,7 +204,7 @@ impl OutboundMessage {
 
     fn from_box(message: Box<dyn FIXTMessage + Send>) -> Self {
         OutboundMessage {
-            message: message,
+            message,
             message_version: None,
             auto_msg_seq_num: true,
         }
@@ -391,10 +350,10 @@ impl InternalConnection {
         }
 
         InternalConnection {
-            fix_version: fix_version,
-            default_message_version: default_message_version,
-            socket: socket,
-            token: token,
+            fix_version,
+            default_message_version,
+            token,
+            socket,
             outbound_messages: Vec::new(),
             outbound_buffer: ByteBuffer::new(),
             outbound_msg_seq_num: 1, //Starts at 1. FIXT v1.1, page 5.
@@ -412,11 +371,11 @@ impl InternalConnection {
             inbound_blocked: false,
             inbound_blocked_timeout: None,
             logout_timeout: None,
-            parser: parser,
+            parser,
             is_connected: false,
             status: ConnectionStatus::SendingLogon,
-            sender_comp_id: sender_comp_id,
-            target_comp_id: target_comp_id,
+            sender_comp_id,
+            target_comp_id,
         }
     }
 
@@ -888,9 +847,9 @@ impl InternalThread {
             //Engine wants to setup a listener to accept new connections.
             InternalEngineToThreadEvent::NewListener(token, sender_comp_id, socket) => {
                 let listener = InternalListener {
-                    socket: socket,
-                    token: token,
-                    sender_comp_id: sender_comp_id,
+                    socket,
+                    token,
+                    sender_comp_id,
                 };
 
                 if let Err(e) = self.poll.register(
@@ -1378,7 +1337,7 @@ impl InternalThread {
                             .send(EngineEvent::ConnectionAccepted(
                                 listener_entry.get().as_listener(),
                                 Connection(token.0),
-                                addr.clone(),
+                                addr,
                             ))
                             .unwrap();
 
@@ -1810,7 +1769,7 @@ impl InternalThread {
         //logout and disconnect immediately. This test is skipped for newly accepted connections
         //because the expected FIX version has not been decided yet.
         if !connection.status.is_receiving_logon() {
-            let ref received_fix_version = message
+            let received_fix_version = &message
                 .meta()
                 .as_ref()
                 .expect("Meta should be set by parser")
@@ -2408,12 +2367,12 @@ pub fn internal_engine_thread(
     //automatic stuff and allows for logging...this is probably just too low level.
 
     let mut internal_thread = InternalThread {
-        poll: poll,
-        token_generator: token_generator,
-        tx: tx,
-        rx: rx,
-        message_dictionary: message_dictionary,
-        max_message_size: max_message_size,
+        poll,
+        token_generator,
+        tx,
+        rx,
+        message_dictionary,
+        max_message_size,
         connections: HashMap::new(),
         listeners: HashMap::new(),
         timer: TimerBuilder::default()

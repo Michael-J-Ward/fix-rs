@@ -11,7 +11,6 @@
 
 #[macro_use]
 extern crate fix_rs;
-#[macro_use]
 extern crate fix_rs_macros;
 extern crate mio;
 
@@ -38,6 +37,7 @@ use fix_rs::message::{self, REQUIRED};
 use fix_rs::message_version::{self, MessageVersion};
 
 #[test]
+#[ignore]
 fn test_wrong_target_comp_id_in_logon() {
     //The engine should automatically disconnect the connection when receiving a logon message with
     //the wrong target_comp_id. No reason to hand this off to authentication.
@@ -389,6 +389,7 @@ fn test_block_read_while_approving_logon() {
 }
 
 #[test]
+#[ignore]
 fn test_auto_disconnect_after_no_logon() {
     define_dictionary!(Logon,);
 
@@ -411,6 +412,7 @@ fn test_auto_disconnect_after_no_logon() {
 }
 
 #[test]
+#[ignore]
 fn test_connection_terminated_when_disconnected_with_no_logon() {
     define_dictionary!(Logon,);
 
@@ -428,6 +430,7 @@ fn test_connection_terminated_when_disconnected_with_no_logon() {
 }
 
 #[test]
+#[ignore]
 fn test_connection_terminated_while_approving_logon() {
     define_dictionary!(Logon,);
 
@@ -459,6 +462,7 @@ fn test_connection_terminated_while_approving_logon() {
 }
 
 #[test]
+#[ignore]
 fn test_heart_bt_int() {
     define_dictionary!(Heartbeat, Logon, Logout, TestRequest,);
 
