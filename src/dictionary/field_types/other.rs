@@ -38,10 +38,10 @@ impl FieldType for ApplVerIDFieldType {
     fn set_value(field: &mut Self::Type, bytes: &[u8]) -> Result<(), SetValueError> {
         if let Some(value) = ApplVerID::from_bytes(bytes) {
             *field = Some(value);
-            return Ok(());
+            Ok(())
+        } else {
+            Err(SetValueError::OutOfRange)
         }
-
-        return Err(SetValueError::OutOfRange);
     }
 
     fn is_empty(field: &Self::Type) -> bool {
@@ -156,10 +156,10 @@ impl FieldType for DefaultApplVerIDFieldType {
     fn set_value(field: &mut Self::Type, bytes: &[u8]) -> Result<(), SetValueError> {
         if let Some(value) = ApplVerID::from_bytes(bytes) {
             *field = value;
-            return Ok(());
+            Ok(())
+        } else {
+            Err(SetValueError::OutOfRange)
         }
-
-        return Err(SetValueError::OutOfRange);
     }
 
     fn is_empty(_field: &Self::Type) -> bool {
@@ -177,7 +177,7 @@ impl FieldType for DefaultApplVerIDFieldType {
         buf: &mut Vec<u8>,
     ) -> usize {
         let bytes_value = field.as_bytes();
-        return buf.write(bytes_value).unwrap();
+        buf.write(bytes_value).unwrap()
     }
 }
 

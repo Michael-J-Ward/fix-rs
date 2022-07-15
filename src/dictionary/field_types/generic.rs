@@ -875,14 +875,14 @@ impl FieldType for MonthYearFieldType {
     fn set_value(field: &mut Self::Type, bytes: &[u8]) -> Result<(), SetValueError> {
         if let Some(value) = Self::Type::new(bytes) {
             *field = value;
-            return Ok(());
+            Ok(())
+        } else {
+            Err(SetValueError::WrongFormat)
         }
-
-        Err(SetValueError::WrongFormat)
     }
 
     fn is_empty(field: &Self::Type) -> bool {
-        return field.year < 0;
+        field.year < 0
     }
 
     fn len(_field: &Self::Type) -> usize {

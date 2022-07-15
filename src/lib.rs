@@ -40,7 +40,6 @@
 #![allow(clippy::ptr_offset_with_cast)]
 #![allow(clippy::into_iter_on_ref)]
 #![allow(clippy::manual_range_contains)]
-#![allow(clippy::needless_return)]
 
 pub mod byte_buffer;
 #[macro_use]
