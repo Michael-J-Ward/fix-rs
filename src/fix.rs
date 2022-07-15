@@ -782,7 +782,7 @@ impl Parser {
                     //Fast track to read in the specified number of bytes.
                     self.fast_track_bytes_remaining = byte_count;
                     *index += 1;
-                    self.fast_track_read_bytes(index, &message_bytes)?;
+                    self.fast_track_read_bytes(index, message_bytes)?;
                     *index -= 1;
                 }
                 TagRuleMode::RepeatingGroupStart(first_repeating_group_tag) => {
@@ -1221,7 +1221,7 @@ impl Parser {
         self.scan_for_message(index, message_bytes);
 
         //Resume loading any bytes using the fast track if we ran out in the last call.
-        self.fast_track_read_bytes(index, &message_bytes)?;
+        self.fast_track_read_bytes(index, message_bytes)?;
 
         //Parse each byte in the message one by one.
         while *index < message_bytes.len() {

@@ -36,7 +36,6 @@
 #![allow(clippy::vec_box)]
 #![allow(clippy::match_ref_pats)]
 #![allow(clippy::mem_replace_with_default)]
-#![allow(clippy::needless_borrow)]
 #![allow(clippy::ptr_offset_with_cast)]
 #![allow(clippy::into_iter_on_ref)]
 

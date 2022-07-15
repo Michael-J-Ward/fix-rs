@@ -726,7 +726,7 @@ impl FieldType for LocalMktDateFieldType {
         _message_version: MessageVersion,
         buf: &mut Vec<u8>,
     ) -> usize {
-        assert!(!Self::is_empty(&field)); //Was required field not set?
+        assert!(!Self::is_empty(field)); //Was required field not set?
 
         let value_string = field.format("%Y%m%d").to_string();
         buf.write(value_string.as_bytes()).unwrap()
@@ -1223,7 +1223,7 @@ impl FieldType for UtcTimestampFieldType {
         _message_version: MessageVersion,
         buf: &mut Vec<u8>,
     ) -> usize {
-        assert!(!Self::is_empty(&field)); //Was required field not set?
+        assert!(!Self::is_empty(field)); //Was required field not set?
 
         buf.reserve(21);
         let naive_utc = field.naive_utc();
