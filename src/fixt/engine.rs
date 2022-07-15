@@ -468,7 +468,7 @@ impl Engine {
                 }
                 _ => {}
             }
-        };
+        }
 
         if let Ok(event) = self.rx.try_recv() {
             update_engine(self, &event);

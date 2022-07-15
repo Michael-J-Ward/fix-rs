@@ -102,7 +102,7 @@ macro_rules! engine_poll_message {
             assert_eq!(msg_connection,$connection);
 
             response_message.as_any().downcast_ref::<$message_type>().expect("Not expected message type").clone()
-        });
+        })
     };
 }
 

@@ -1,3 +1,6 @@
+// TODO: Many fields are never read... need to figure out what's necessary and what's not
+#![allow(dead_code)]
+
 use std::fmt;
 use std::fs::File;
 use std::io::{self, Read, Write};

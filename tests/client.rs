@@ -11,7 +11,6 @@
 
 #[macro_use]
 extern crate fix_rs;
-#[macro_use]
 extern crate fix_rs_macros;
 extern crate mio;
 extern crate phf;
@@ -181,6 +180,7 @@ fn test_recv_logout_with_high_msg_seq_num_and_no_reply() {
     });
 }
 
+/// WARN: This test periodically fails
 #[test]
 fn test_recv_logout_send_logout_recv_resend_request() {
     define_dictionary!(

@@ -15,7 +15,6 @@
 extern crate chrono;
 #[macro_use]
 extern crate fix_rs;
-#[macro_use]
 extern crate fix_rs_macros;
 extern crate mio;
 extern crate phf;
