@@ -12,6 +12,7 @@
 #![allow(non_snake_case)]
 
 ///! The following test cases are based on the tests listed in the FIXT 1.1 spec.
+///! https://www.fixtrading.org/standards/fix-session-testcases-online/#fix-session-layer-test-cases
 extern crate chrono;
 #[macro_use]
 extern crate fix_rs;
