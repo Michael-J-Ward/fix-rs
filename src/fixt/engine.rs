@@ -348,7 +348,7 @@ impl Engine {
 
         self.tx
             .send(InternalEngineToThreadEvent::NewListener(
-                token.clone(),
+                token,
                 sender_comp_id.to_vec(),
                 listener,
             ))

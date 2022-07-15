@@ -701,7 +701,7 @@ impl Parser {
                             .push(Box::new(TagRuleMode::RepeatingGroupStart(first_field)));
                     }
                     Ok(_) => {} //group_count == 0. Just ignore.
-                    Err(_) => return Err(ParseError::WrongFormatTag(self.current_tag.clone())),
+                    Err(_) => return Err(ParseError::WrongFormatTag(self.current_tag)),
                 }
                 skip_set_value = true;
             }
@@ -776,9 +776,7 @@ impl Parser {
             match *tag_rule_mode {
                 TagRuleMode::LengthThenValue(ref value_tag, byte_count) => {
                     if self.current_tag != *value_tag {
-                        return Err(ParseError::MissingFollowingLengthTag(
-                            self.previous_tag.clone(),
-                        ));
+                        return Err(ParseError::MissingFollowingLengthTag(self.previous_tag));
                     }
 
                     //Fast track to read in the specified number of bytes.
@@ -807,9 +805,7 @@ impl Parser {
             self.value_to_length_tags.get(&self.current_tag)
         {
             if *required_preceding_tag != self.previous_tag {
-                return Err(ParseError::MissingPrecedingLengthTag(
-                    self.current_tag.clone(),
-                ));
+                return Err(ParseError::MissingPrecedingLengthTag(self.current_tag));
             }
         }
 
@@ -905,7 +901,7 @@ impl Parser {
             self.target_comp_id = self.current_bytes.clone();
         } else if self.current_bytes.is_empty() {
             //Tag was provided without a value.
-            return Err(ParseError::NoValueAfterTag(self.current_tag.clone()));
+            return Err(ParseError::NoValueAfterTag(self.current_tag));
         } else {
             //FIXT.1.1 requires that if the ApplVerID tag is specified, it must be the sixth field.
             let mut skip_set_value = false;
@@ -917,7 +913,7 @@ impl Parser {
                         self.message_version = appl_ver_id;
                         skip_set_value = true;
                     } else {
-                        return Err(ParseError::OutOfRangeTag(self.current_tag.clone()));
+                        return Err(ParseError::OutOfRangeTag(self.current_tag));
                     }
                 }
                 //Fall back to the message specific default (if specified) or the session default
@@ -1037,7 +1033,7 @@ impl Parser {
                                 .fields(self.message_version)
                                 .contains_key(&self.current_tag)
                             {
-                                return Err(ParseError::DuplicateTag(self.current_tag.clone()));
+                                return Err(ParseError::DuplicateTag(self.current_tag));
                             } else if prgs.groups.len() < prgs.group_count {
                                 return Err(ParseError::NonRepeatingGroupTagInRepeatingGroup(
                                     self.current_tag,
@@ -1099,12 +1095,12 @@ impl Parser {
                                 return Err(ParseError::ApplVerIDNotSixthTag);
                             }
 
-                            return Err(ParseError::DuplicateTag(self.current_tag.clone()));
+                            return Err(ParseError::DuplicateTag(self.current_tag));
                         } else {
-                            return Err(ParseError::UnexpectedTag(self.current_tag.clone()));
+                            return Err(ParseError::UnexpectedTag(self.current_tag));
                         }
                     } else {
-                        return Err(ParseError::UnknownTag(self.current_tag.clone()));
+                        return Err(ParseError::UnknownTag(self.current_tag));
                     }
                 }
             }

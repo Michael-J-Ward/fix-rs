@@ -1337,7 +1337,7 @@ impl InternalThread {
                             .send(EngineEvent::ConnectionAccepted(
                                 listener_entry.get().as_listener(),
                                 Connection(token.0),
-                                addr.clone(),
+                                addr,
                             ))
                             .unwrap();
 
