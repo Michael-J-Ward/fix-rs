@@ -37,12 +37,12 @@ use crate::rule::Rule;
 //TODO: Support configuration settings for things like MAX_VALUE_LENGTH, MAX_BODY_LENGTH,
 //      MAX_TAG_LENGTH, the size of a "Length" and other types.
 
-const BEGINSTR_TAG_BYTES: &'static [u8] = b"8";
+const BEGINSTR_TAG_BYTES: &[u8] = b"8";
 const BEGINSTR_TAG: FieldTag = FieldTag(8);
-const BODYLENGTH_TAG_BYTES: &'static [u8] = b"9";
+const BODYLENGTH_TAG_BYTES: &[u8] = b"9";
 const BODYLENGTH_TAG: FieldTag = FieldTag(9);
 const MSGTYPE_TAG: FieldTag = FieldTag(35);
-const CHECKSUM_TAG_BYTES: &'static [u8] = b"10";
+const CHECKSUM_TAG_BYTES: &[u8] = b"10";
 const CHECKSUM_TAG: FieldTag = FieldTag(10);
 
 pub enum ParseError {
