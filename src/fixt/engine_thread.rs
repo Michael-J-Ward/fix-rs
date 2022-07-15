@@ -1769,7 +1769,7 @@ impl InternalThread {
         //logout and disconnect immediately. This test is skipped for newly accepted connections
         //because the expected FIX version has not been decided yet.
         if !connection.status.is_receiving_logon() {
-            let ref received_fix_version = message
+            let received_fix_version = &message
                 .meta()
                 .as_ref()
                 .expect("Meta should be set by parser")

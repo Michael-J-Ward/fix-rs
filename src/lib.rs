@@ -31,7 +31,6 @@
 #![allow(clippy::collapsible_match)]
 #![allow(clippy::comparison_chain)]
 #![allow(clippy::redundant_pattern_matching)]
-#![allow(clippy::toplevel_ref_arg)]
 #![allow(clippy::from_over_into)]
 #![allow(clippy::vec_box)]
 #![allow(clippy::match_ref_pats)]
