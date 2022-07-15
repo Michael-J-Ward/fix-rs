@@ -231,7 +231,7 @@ impl OutboundMessage {
         OutboundMessage {
             message: Box::new(message),
             message_version: None,
-            auto_msg_seq_num: auto_msg_seq_num,
+            auto_msg_seq_num,
         }
     }
 
@@ -245,7 +245,7 @@ impl OutboundMessage {
 
     fn from_box(message: Box<dyn FIXTMessage + Send>) -> Self {
         OutboundMessage {
-            message: message,
+            message,
             message_version: None,
             auto_msg_seq_num: true,
         }
@@ -391,10 +391,10 @@ impl InternalConnection {
         }
 
         InternalConnection {
-            fix_version: fix_version,
-            default_message_version: default_message_version,
-            socket: socket,
-            token: token,
+            fix_version,
+            default_message_version,
+            token,
+            socket,
             outbound_messages: Vec::new(),
             outbound_buffer: ByteBuffer::new(),
             outbound_msg_seq_num: 1, //Starts at 1. FIXT v1.1, page 5.
@@ -412,11 +412,11 @@ impl InternalConnection {
             inbound_blocked: false,
             inbound_blocked_timeout: None,
             logout_timeout: None,
-            parser: parser,
+            parser,
             is_connected: false,
             status: ConnectionStatus::SendingLogon,
-            sender_comp_id: sender_comp_id,
-            target_comp_id: target_comp_id,
+            sender_comp_id,
+            target_comp_id,
         }
     }
 
@@ -888,9 +888,9 @@ impl InternalThread {
             //Engine wants to setup a listener to accept new connections.
             InternalEngineToThreadEvent::NewListener(token, sender_comp_id, socket) => {
                 let listener = InternalListener {
-                    socket: socket,
-                    token: token,
-                    sender_comp_id: sender_comp_id,
+                    socket,
+                    token,
+                    sender_comp_id,
                 };
 
                 if let Err(e) = self.poll.register(
@@ -2408,12 +2408,12 @@ pub fn internal_engine_thread(
     //automatic stuff and allows for logging...this is probably just too low level.
 
     let mut internal_thread = InternalThread {
-        poll: poll,
-        token_generator: token_generator,
-        tx: tx,
-        rx: rx,
-        message_dictionary: message_dictionary,
-        max_message_size: max_message_size,
+        poll,
+        token_generator,
+        tx,
+        rx,
+        message_dictionary,
+        max_message_size,
         connections: HashMap::new(),
         listeners: HashMap::new(),
         timer: TimerBuilder::default()

@@ -318,11 +318,11 @@ impl Parser {
         }
 
         Parser {
-            message_dictionary: message_dictionary,
-            max_message_length: max_message_length,
+            message_dictionary,
+            max_message_length,
             default_message_version: DefaultApplVerIDFieldType::default_value(),
             default_message_type_version: HashMap::new(),
-            value_to_length_tags: value_to_length_tags,
+            value_to_length_tags,
             found_message: FoundMessage::NotFound,
             current_tag: FieldTag::empty(),
             current_bytes: Vec::with_capacity(64),
@@ -690,7 +690,7 @@ impl Parser {
                             .push(Box::new(TagRuleMode::RepeatingGroups(Box::new(
                                 ParseRepeatingGroupState {
                                     number_of_tag: self.current_tag,
-                                    group_count: group_count,
+                                    group_count,
                                     first_tag: repeating_group_builder
                                         .first_field(self.message_version),
                                     groups: Vec::new(),
@@ -993,8 +993,8 @@ impl Parser {
                                 prgs.group_builder.required_fields(self.message_version);
                             prgs.groups.push(ParseGroupState {
                                 message: group,
-                                remaining_fields: remaining_fields,
-                                remaining_required_fields: remaining_required_fields,
+                                remaining_fields,
+                                remaining_required_fields,
                             });
 
                             //Make sure we haven't exceeded the number of repeating

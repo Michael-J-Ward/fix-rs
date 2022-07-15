@@ -818,9 +818,9 @@ impl MonthYear {
         };
 
         Some(MonthYear {
-            year: year,
-            month: month,
-            remainder: remainder,
+            year,
+            month,
+            remainder,
         })
     }
 

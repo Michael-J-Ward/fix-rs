@@ -26,7 +26,7 @@ impl TokenGenerator {
     pub fn new(reserved_end: usize, max_tokens: Option<usize>) -> TokenGenerator {
         TokenGenerator {
             seed: reserved_end,
-            reserved_end: reserved_end,
+            reserved_end,
             max_tokens: max_tokens.unwrap_or(usize::max_value() - reserved_end),
             active_tokens: HashSet::new(),
         }
