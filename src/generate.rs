@@ -279,7 +279,14 @@ use fix_rs::{define_fields, define_fixt_message, define_dictionary};"#
                         field.name
                     )?;
                 }
-                _ => {} // FIXME: Groups and Components
+                FixItemSchema::Component(_) => {
+                    // FIXME: Components
+                    todo!("implement components")
+                }
+                FixItemSchema::Group(_) => {
+                    // FIXME: Groups
+                    todo!("implement groups")
+                }
             }
         }
 

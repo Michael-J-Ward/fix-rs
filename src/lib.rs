@@ -41,7 +41,7 @@
 #![allow(clippy::into_iter_on_ref)]
 #![allow(clippy::manual_range_contains)]
 #![allow(clippy::needless_return)]
-#![allow(clippy::single_match)]
+
 pub mod byte_buffer;
 #[macro_use]
 pub mod fixt;
