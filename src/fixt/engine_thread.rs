@@ -107,103 +107,62 @@ enum ConnectionStatus {
 
 impl ConnectionStatus {
     fn is_sending_logon(&self) -> bool {
-        if let ConnectionStatus::SendingLogon = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::SendingLogon)
     }
 
     fn is_receiving_logon(&self) -> bool {
-        if let ConnectionStatus::ReceivingLogon(_, _) = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::ReceivingLogon(_, _))
     }
 
     fn is_approving_logon(&self) -> bool {
-        if let ConnectionStatus::ApprovingLogon = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::ApprovingLogon)
     }
 
     fn is_established(&self) -> bool {
-        if let ConnectionStatus::Established = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::Established)
     }
 
     fn is_logging_out(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(_) = *self {
-            true
-        } else {
-            false
-        }
+        matches!(*self, ConnectionStatus::LoggingOut(_))
     }
 
     fn is_logging_out_with_error(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::Error(_) = *logging_out_type {
-                true
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::Error(_))
+        )
     }
 
     fn is_logging_out_with_resending_request_initiated_by_local(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::ResendRequesting(ref logging_out_initiator) = *logging_out_type {
-                if let LoggingOutInitiator::Local = *logging_out_initiator {
-                    return true;
-                }
-            }
-        }
-
-        false
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::ResendRequesting(
+                LoggingOutInitiator::Local
+            ))
+        )
     }
 
     fn is_logging_out_with_resending_request_initiated_by_remote(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::ResendRequesting(ref logging_out_initiator) = *logging_out_type {
-                if let LoggingOutInitiator::Remote = *logging_out_initiator {
-                    return true;
-                }
-            }
-        }
-
-        false
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::ResendRequesting(
+                LoggingOutInitiator::Remote
+            ))
+        )
     }
 
     fn is_logging_out_with_responding(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::Responding = *logging_out_type {
-                true
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::Responding)
+        )
     }
 
     fn is_logging_out_with_responded(&self) -> bool {
-        if let ConnectionStatus::LoggingOut(ref logging_out_type) = *self {
-            if let LoggingOutType::Responded = *logging_out_type {
-                true
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+        matches!(
+            *self,
+            ConnectionStatus::LoggingOut(LoggingOutType::Responded)
+        )
     }
 }
 
