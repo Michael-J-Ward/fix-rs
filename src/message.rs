@@ -152,17 +152,17 @@ pub trait Message {
         let checksum_str = checksum.to_string();
 
         //Write checksum at the end.
-        buf.bytes.write(b"10=").unwrap();
+        buf.bytes.write_all(b"10=").unwrap();
         if checksum < 100 {
             //Checksum must always have a length of 3.
             //FIXT version 1.1, page 55.
-            buf.bytes.write(b"0").unwrap();
+            buf.bytes.write_all(b"0").unwrap();
             if checksum < 10 {
-                buf.bytes.write(b"0").unwrap();
+                buf.bytes.write_all(b"0").unwrap();
             }
         }
-        buf.bytes.write(checksum_str.as_bytes()).unwrap();
-        buf.bytes.write(b"\x01").unwrap();
+        buf.bytes.write_all(checksum_str.as_bytes()).unwrap();
+        buf.bytes.write_all(b"\x01").unwrap();
 
         //Mark end of buffer.
         buf.valid_bytes_end = buf.bytes.len();

@@ -214,7 +214,7 @@ pub fn generate_dictionary<P: AsRef<Path>>(src: P, dest: P) -> Result<(), Genera
 
     let schema: FixXmlSchema = from_str(&file_contents)?;
 
-    f.write(
+    f.write_all(
         r#"use fix_rs::field::Field;
 use fix_rs::field_tag::{self, FieldTag};
 use fix_rs::field_type::FieldType;
