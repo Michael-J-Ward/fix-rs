@@ -23,6 +23,25 @@
 //!
 //! [1]: http://www.fixtradingcommunity.org/
 
+#![allow(clippy::suspicious_else_formatting)]
+#![allow(clippy::collapsible_else_if)]
+#![allow(clippy::manual_map)]
+#![allow(clippy::large_enum_variant)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::collapsible_match)]
+#![allow(clippy::comparison_chain)]
+#![allow(clippy::redundant_pattern_matching)]
+#![allow(clippy::toplevel_ref_arg)]
+#![allow(clippy::from_over_into)]
+#![allow(clippy::vec_box)]
+#![allow(clippy::match_ref_pats)]
+#![allow(clippy::mem_replace_with_default)]
+#![allow(clippy::needless_borrow)]
+#![allow(clippy::ptr_offset_with_cast)]
+#![allow(clippy::into_iter_on_ref)]
+#![allow(clippy::manual_range_contains)]
+#![allow(clippy::needless_return)]
+#![allow(clippy::single_match)]
 pub mod byte_buffer;
 #[macro_use]
 pub mod fixt;
