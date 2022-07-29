@@ -2,6 +2,7 @@
 *.pdf
 *.doc
 *.txt
+.env
 target/*
 fix-rs-macros/target/*
 callgrind.out.*
